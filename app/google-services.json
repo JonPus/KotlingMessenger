@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "493913151613",
+    "firebase_url": "https://kotlingmessengerapp.firebaseio.com",
+    "project_id": "kotlingmessengerapp",
+    "storage_bucket": "kotlingmessengerapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493913151613:android:9e7a4c52b3a41edd84f914",
+        "android_client_info": {
+          "package_name": "com.example.kotlingmessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493913151613-jabdhfckvc18ou26an0h8gb4lhk34o32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdSGU_Wivr5P3p9YgrGQof6akzM1rW3Xc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493913151613-jabdhfckvc18ou26an0h8gb4lhk34o32.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
