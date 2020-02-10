@@ -12,6 +12,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -27,6 +28,8 @@ class ChatLogActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<GroupieViewHolder>()
 
+    var toUser: User? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
@@ -37,10 +40,10 @@ class ChatLogActivity : AppCompatActivity() {
 
         //val username = intent.getStringExtra(NewMessageActivity.USER_KEY)
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
 
         val adapter = GroupAdapter<GroupieViewHolder>()
-        supportActionBar?.title = user.username
+        supportActionBar?.title = toUser?.username
 
         //setupDummyData()
 
@@ -63,9 +66,10 @@ class ChatLogActivity : AppCompatActivity() {
                     Log.d(TAG, chatMessage?.text)
 
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatFromItem(chatMessage.text))
+                        val currentUser = LatestMessagesActivity.currentUser ?: return
+                        adapter.add(ChatFromItem(chatMessage.text, currentUser))
                     } else {
-                        adapter.add(ChatToItem(chatMessage.text))
+                        adapter.add(ChatToItem(chatMessage.text, toUser!!))
                     }
                 }
 
@@ -111,21 +115,15 @@ class ChatLogActivity : AppCompatActivity() {
                 Log.d(TAG, "Saved our chat message ${reference.key}")
             }
     }
-
-    private fun setupDummyData() {
-
-        val adapter=  GroupAdapter<GroupieViewHolder>()
-
-        adapter.add(ChatFromItem("From  Message"))
-        adapter.add(ChatToItem("To Message"))
-
-        recyclerview_chat_log.adapter = adapter
-    }
 }
 
-class ChatFromItem(val text: String): Item<GroupieViewHolder>(){
+class ChatFromItem(val text: String, val user: User): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.textview_from_row.text =text
+
+        val uri = user.profileImageUrl
+        val targetImageView = viewHolder.itemView.imageview_chat_from_row
+        Picasso.get().load(uri).into(targetImageView)
 
     }
 
@@ -134,9 +132,13 @@ class ChatFromItem(val text: String): Item<GroupieViewHolder>(){
     }
 }
 
-class ChatToItem(val text: String): Item<GroupieViewHolder>(){
+class ChatToItem(val text: String, val user: User): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.textView_to_row.text = text
+
+        val uri = user.profileImageUrl
+        val targetImageView = viewHolder.itemView.imageview_chat_to_row
+        Picasso.get().load(uri).into(targetImageView)
     }
 
     override fun getLayout(): Int {
