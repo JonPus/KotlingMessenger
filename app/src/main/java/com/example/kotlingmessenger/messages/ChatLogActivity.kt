@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlingmessenger.R
 import com.example.kotlingmessenger.models.ChatMessage
 import com.example.kotlingmessenger.models.User
+import com.example.kotlingmessenger.views.ChatFromItem
+import com.example.kotlingmessenger.views.ChatToItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -77,6 +79,8 @@ class ChatLogActivity : AppCompatActivity() {
                     }
                 }
 
+                recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+
 
             }
 
@@ -123,34 +127,12 @@ class ChatLogActivity : AppCompatActivity() {
                 recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
             }
         toReference.setValue(chatMessage)
+
+        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+        latestMessageRef.setValue(chatMessage)
+
+        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+        latestMessageRef.setValue(chatMessage)
     }
 }
 
-class ChatFromItem(val text: String, val user: User): Item<GroupieViewHolder>(){
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.textview_from_row.text =text
-
-        val uri = user.profileImageUrl
-        val targetImageView = viewHolder.itemView.imageview_chat_from_row
-        Picasso.get().load(uri).into(targetImageView)
-
-    }
-
-    override fun getLayout(): Int {
-        return R.layout.chat_from_row
-    }
-}
-
-class ChatToItem(val text: String, val user: User): Item<GroupieViewHolder>(){
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.textView_to_row.text = text
-
-        val uri = user.profileImageUrl
-        val targetImageView = viewHolder.itemView.imageview_chat_to_row
-        Picasso.get().load(uri).into(targetImageView)
-    }
-
-    override fun getLayout(): Int {
-        return R.layout.chat_to_row
-    }
-}
